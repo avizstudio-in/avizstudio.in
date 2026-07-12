@@ -1,0 +1,9 @@
+# AVIZ Studio Portfolio
+
+Professional architecture and interior design portfolio of AVIZ Studio.
+
+## Pages
+- [Home](index.html): Personal introduction, background, experience, design philosophy, and contact form.
+- [Residential Design Projects](residential/index.html): Showcase of high-end home interiors (Projects 1-10).
+- [Commercial Design Projects](commercial/index.html): Corporate offices and bistros (Projects 1-3).
+- [Exterior Design Projects](exterior/index.html): Exterior architectural elevations and landscaping (Projects 1-4).

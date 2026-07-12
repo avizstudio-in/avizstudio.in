@@ -1,0 +1,7 @@
+/* TEAM */
+Designer & Architect: AVIZ Studio
+Developer: Zencrypt
+
+/* SITE INFO */
+Last updated: 2026-07-06
+Standards: HTML5, CSS3, Vanilla JS
