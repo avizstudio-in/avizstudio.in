@@ -67,8 +67,11 @@
                 } else if (url.indexOf('theme=light') !== -1 || url.indexOf('#light') !== -1) {
                     // Set active theme to light
                     theme = 'light';
-                } else {
-                    // Default fallback to light
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    // Fall back to system browser preference (dark)
+                    theme = 'dark';
+                   else {
+                    // Fall back to system browser preference (light)
                     theme = 'light';
                 }
             } catch(e) {}
@@ -425,7 +428,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // If URL contains theme=light search query or hash
             if (url.indexOf('theme=light') !== -1 || url.indexOf('#light') !== -1) return 'light';
         } catch (e) {}
-
+        
+        // Match browser/system prefers-color-scheme if no manual theme preference is stored
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+           return 'dark';
+        } 
         // Default fallback theme
         return 'light';
     };
@@ -489,6 +496,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Force sync application of recovered theme
         applyTheme(savedTheme);
     });
+
+   // Listen for live system/browser theme preference changes
+    if (window.matchMedia) {
+        try {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                // Only auto-switch if user hasn't explicitly saved a preference in storage
+                if (!safeLocalStorage.getItem('theme') && !safeSessionStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        } catch (err) {}
+    }
 
     // --- 6. AUTO-SLIDING CAROUSELS WITH SEAMLESS INFINITE LOOP ---
     // Query all project slider blocks
