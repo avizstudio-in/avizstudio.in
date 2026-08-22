@@ -1102,13 +1102,13 @@ footer {
     height: 24px;                                               /* Set layout height span */
 }
 
-/* Lightbox Dots Indicator */
+/* Lightbox Dots Indicator (Hidden on PC, visible on mobile where arrows are hidden) */
 .lightbox-dots {
     position: absolute;                                         /* Set positioning layout scheme */
     bottom: 30px;                                               /* Position offset from bottom edge */
     left: 50%;                                                  /* Position offset from left edge */
     transform: translateX(-50%);                                /* Apply dimensional transformations and rotations */
-    display: flex;                                              /* Define element layout container type */
+    display: none !important;                                   /* Hide on PC where side arrows are visible */
     gap: 12px;                                                  /* Define spacing gap between sibling child elements */
     z-index: 9999999;                                           /* Set stack order layer depth */
 }
@@ -2040,6 +2040,56 @@ h1, h2, h3, h4, h5, h6, p, a, span, .nav-logo {
     .mobile-only-links {
         display: inline !important;                             /* Show mobile text on tablet/mobile */
     }
+
+    /* Lightbox dots visible on mobile/tablet viewports */
+    .lightbox-dots {
+        display: flex !important;
+    }
+
+    /* Mobile CTA Button styling and dynamic animations for View Portfolio links */
+    .category-card-link {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px 20px !important;
+        background: var(--accent-gold) !important;
+        color: #0c0c0e !important;
+        font-weight: 700 !important;
+        font-size: 11px !important;
+        border-radius: 30px !important;
+        letter-spacing: 0.15em !important;
+        margin-top: 14px !important;
+        box-shadow: 0 4px 15px rgba(197, 168, 128, 0.4) !important;
+        animation: pulseCtaMobile 2s infinite ease-in-out !important;
+    }
+
+    .category-card-link svg {
+        stroke: #0c0c0e !important;
+        animation: arrowSlideMobile 1.5s infinite ease-in-out !important;
+    }
+}
+
+@keyframes pulseCtaMobile {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(197, 168, 128, 0.4);
+    }
+    50% {
+        transform: scale(1.04);
+        box-shadow: 0 6px 20px rgba(197, 168, 128, 0.65);
+    }
+}
+
+@keyframes arrowSlideMobile {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+}
+
+    
 }
 
 @media (max-width: 768px) {
