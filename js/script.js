@@ -63,14 +63,13 @@
                 if (url.indexOf('theme=dark') !== -1 || url.indexOf('#dark') !== -1) {
                     // Set active theme to dark
                     theme = 'dark';
-                // Else if URL contains 'theme=light' parameter or '#light' hash
                 } else if (url.indexOf('theme=light') !== -1 || url.indexOf('#light') !== -1) {
                     // Set active theme to light
                     theme = 'light';
                 } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     // Fall back to system browser preference (dark)
                     theme = 'dark';
-                   else {
+                } else {
                     // Fall back to system browser preference (light)
                     theme = 'light';
                 }
