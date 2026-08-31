@@ -969,3 +969,140 @@ document.addEventListener('dragstart', (e) => {
     // Block image drag operations
     e.preventDefault();
 });
+
+// --- 9. MOBILE SERVICES AUTO-MARQUEE CAROUSEL WITH TOUCH OVERRIDE & RESUME ---
+(function initMobileServicesMarquee() {
+    const isMobileQuery = window.matchMedia('(max-width: 1024px)');
+    
+    const setupMarquee = () => {
+        const servicesSection = document.getElementById('services');
+        if (!servicesSection) return;
+        const grid = servicesSection.querySelector('.services-grid');
+        if (!grid) return;
+
+        let animFrameId = null;
+        let resumeTimer = null;
+        let isRunning = false;
+        let userInteracting = false;
+        let isSectionVisible = false;
+        const scrollSpeed = 0.6; // pixels per frame for smooth luxury motion
+
+        const stopMarquee = () => {
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+            isRunning = false;
+            grid.classList.remove('marquee-active');
+            grid.classList.add('marquee-paused');
+        };
+
+        const marqueeStep = () => {
+            if (!isRunning || userInteracting || !isSectionVisible || !isMobileQuery.matches) {
+                return;
+            }
+
+            const maxScroll = grid.scrollWidth - grid.clientWidth;
+            if (maxScroll <= 0) return;
+
+            // Endless loop: reset scroll position smoothly when reaching the end
+            if (grid.scrollLeft >= maxScroll - 1) {
+                grid.scrollLeft = 0;
+            } else {
+                grid.scrollLeft += scrollSpeed;
+            }
+
+            animFrameId = requestAnimationFrame(marqueeStep);
+        };
+
+        const startMarquee = () => {
+            if (isRunning || userInteracting || !isSectionVisible || !isMobileQuery.matches) return;
+            isRunning = true;
+            grid.classList.remove('marquee-paused');
+            grid.classList.add('marquee-active');
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            animFrameId = requestAnimationFrame(marqueeStep);
+        };
+
+        const pauseAndScheduleResume = () => {
+            stopMarquee();
+            if (resumeTimer) clearTimeout(resumeTimer);
+            resumeTimer = setTimeout(() => {
+                userInteracting = false;
+                if (isSectionVisible && isMobileQuery.matches) {
+                    startMarquee();
+                }
+            }, 3500);
+        };
+
+        const handleTouchStart = () => {
+            userInteracting = true;
+            stopMarquee();
+            if (resumeTimer) clearTimeout(resumeTimer);
+        };
+
+        const handleTouchEnd = () => {
+            pauseAndScheduleResume();
+        };
+
+        const handleScroll = () => {
+            if (!isRunning) {
+                pauseAndScheduleResume();
+            }
+        };
+
+        // Attach touch, pointer, and scroll event handlers
+        grid.addEventListener('touchstart', handleTouchStart, { passive: true });
+        grid.addEventListener('touchmove', handleTouchStart, { passive: true });
+        grid.addEventListener('pointerdown', handleTouchStart, { passive: true });
+        grid.addEventListener('wheel', handleTouchStart, { passive: true });
+
+        grid.addEventListener('touchend', handleTouchEnd, { passive: true });
+        grid.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+        grid.addEventListener('pointerup', handleTouchEnd, { passive: true });
+
+        grid.addEventListener('scroll', handleScroll, { passive: true });
+
+        // Intersection Observer: run marquee only when Services section is visible on screen
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    isSectionVisible = entry.isIntersecting;
+                    if (isSectionVisible && !userInteracting && isMobileQuery.matches) {
+                        startMarquee();
+                    } else {
+                        stopMarquee();
+                    }
+                });
+            }, { threshold: 0.15 });
+            observer.observe(servicesSection);
+        } else {
+            isSectionVisible = true;
+            if (isMobileQuery.matches) {
+                startMarquee();
+            }
+        }
+
+        // Handle viewport resize / orientation change
+        const handleViewportChange = (e) => {
+            if (!e.matches) {
+                stopMarquee();
+                grid.classList.remove('marquee-active', 'marquee-paused');
+            } else if (isSectionVisible && !userInteracting) {
+                startMarquee();
+            }
+        };
+
+        if (isMobileQuery.addEventListener) {
+            isMobileQuery.addEventListener('change', handleViewportChange);
+        } else if (isMobileQuery.addListener) {
+            isMobileQuery.addListener(handleViewportChange);
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMarquee);
+    } else {
+        setupMarquee();
+    }
+})();
