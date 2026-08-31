@@ -1996,14 +1996,24 @@ h1, h2, h3, h4, h5, h6, p, a, span, .nav-logo {
         flex-wrap: nowrap !important;                           /* Prevent vertical wrapping of service items */
         overflow-x: scroll !important;                          /* Force horizontal scroll capability */
         overflow-y: visible !important;                         /* Prevent vertical swipe lockups on touch screens */
-        scroll-snap-type: x mandatory !important;               /* Enable smooth mandatory snapping */
-        scroll-behavior: smooth !important;
+        scroll-snap-type: x mandatory;                          /* Enable smooth mandatory snapping when paused */
+        scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch !important;           /* iOS smooth inertial scroll */
         gap: 20px !important;                                   /* Balanced spacing gap */
         padding: 10px 4px 20px 4px !important;                  /* Bottom padding to prevent shadow clipping */
         width: 100% !important;
         touch-action: pan-x pan-y !important;                   /* Permit multi-directional swipe gestures */
         scrollbar-width: none !important;                       /* Hide scrollbar on Firefox */
+    }
+
+    .services-grid.marquee-active {
+        scroll-snap-type: none !important;                      /* Disable snap lock during auto marquee movement */
+        scroll-behavior: auto !important;                       /* Instant frame updates without smooth fight */
+    }
+
+    .services-grid.marquee-paused {
+        scroll-snap-type: x mandatory !important;               /* Restore snapping during finger interaction */
+        scroll-behavior: smooth !important;
     }
 
     .services-grid::-webkit-scrollbar {
